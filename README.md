@@ -15,7 +15,7 @@ Currently, TPTK serves as a submodule of [DeepMG](https://github.com/sjruan/Deep
 * Map Matching Support
     * Hidden Markov Map Matching
 
-## Papers
+## Paper
 
 If you find our code useful for your research, please cite our paper:
 
