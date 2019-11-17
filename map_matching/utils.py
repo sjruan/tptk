@@ -1,6 +1,8 @@
+import sys
+sys.path.append('../')
+from common.spatial_func import SPoint, distance
 import networkx as nx
 import math
-from common.spatial_func import SPoint, distance
 
 
 def find_shortest_path(rn, prev_candi_pt, cur_candi_pt):
