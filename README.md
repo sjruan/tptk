@@ -10,7 +10,9 @@ Currently, TPTK serves as a submodule of [DeepMG](https://github.com/sjruan/Deep
 
 * Basic Spatial Functions
     * Distance Calculation
+    * Spatial Griding
     * Spatial Index
+    * Line Segment Simplification
 
 * Map Matching Support
     * Hidden Markov Map Matching
