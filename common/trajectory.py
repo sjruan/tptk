@@ -1,9 +1,7 @@
-from .spatial_func import distance, SPoint
-from .mbr import MBR
-from datetime import datetime
-import sys
-sys.path.append('../')
+from common.spatial_func import distance, SPoint
+from common.mbr import MBR
 from map_matching.candidate_point import CandidatePoint
+from datetime import datetime
 
 
 class STPoint(SPoint):

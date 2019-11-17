@@ -1,5 +1,5 @@
 import numpy as np
-from .spatial_func import project_pt_to_line
+from common.spatial_func import project_pt_to_line
 
 
 class DouglasPeucker:

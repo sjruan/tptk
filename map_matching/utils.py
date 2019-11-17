@@ -1,5 +1,3 @@
-import sys
-sys.path.append('../')
 from common.spatial_func import SPoint, distance
 import networkx as nx
 import math

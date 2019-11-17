@@ -1,8 +1,8 @@
 import networkx as nx
 from rtree import Rtree
 from osgeo import ogr
-from .spatial_func import SPoint, distance
-from .mbr import MBR
+from common.spatial_func import SPoint, distance
+from common.mbr import MBR
 
 
 class UndirRoadNetwork(nx.Graph):

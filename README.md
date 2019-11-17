@@ -25,9 +25,8 @@ If you find our code useful for your research, please cite our paper:
 
 ## Requirements
 
-TPTK uses the following dependencies
+TPTK uses the following dependencies with Python 3.6
 
-* Python 3.6
 * rtree==0.8.3
 * networkx==2.3
 * GDAL==2.3.2

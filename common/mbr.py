@@ -1,4 +1,4 @@
-from .spatial_func import distance
+from common.spatial_func import distance
 
 
 class MBR:

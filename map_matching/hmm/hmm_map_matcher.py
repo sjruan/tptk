@@ -5,10 +5,8 @@ Conference on Advances in Geographic Information Systems. ACM, 2009.
 This is a Python translation from https://github.com/graphhopper/map-matching/tree/master/hmm-lib
 """
 
-from .hmm_probabilities import HMMProbabilities
-from .ti_viterbi import ViterbiAlgorithm, SequenceState
-import sys
-sys.path.append('../../')
+from map_matching.hmm.hmm_probabilities import HMMProbabilities
+from map_matching.hmm.ti_viterbi import ViterbiAlgorithm, SequenceState
 from map_matching.map_matcher import MapMatcher
 from map_matching.candidate_point import get_candidates
 from common.spatial_func import distance

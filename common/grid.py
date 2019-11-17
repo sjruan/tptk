@@ -1,6 +1,6 @@
 import numpy as np
-from .mbr import MBR
-from .spatial_func import LAT_PER_METER, LNG_PER_METER
+from common.mbr import MBR
+from common.spatial_func import LAT_PER_METER, LNG_PER_METER
 
 
 class Grid:
