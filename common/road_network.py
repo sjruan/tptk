@@ -3,7 +3,7 @@ from rtree import Rtree
 from osgeo import ogr
 from common.spatial_func import SPoint, distance
 from common.mbr import MBR
-
+import copy
 
 class UndirRoadNetwork(nx.Graph):
     def __init__(self, g, edge_spatial_idx, edge_idx):
@@ -12,6 +12,40 @@ class UndirRoadNetwork(nx.Graph):
         self.edge_spatial_idx = edge_spatial_idx
         # eid -> edge key (start_coord, end_coord)
         self.edge_idx = edge_idx
+
+    def to_directed(self, as_view=False):
+        """
+        new edge will have new eid, and each original edge will have two edge with reversed coords
+        :return:
+        """
+        assert as_view is False, "as_view is not supported"
+        avail_eid = max([eid for u, v, eid in self.edges.data(data='eid')]) + 1
+        g = nx.DiGraph()
+        edge_spatial_idx = Rtree()
+        edge_idx = {}
+        # add nodes
+        for n, data in self.nodes(data=True):
+            new_data = copy.deepcopy(data)
+            g.add_node(n, **new_data)
+        # add edges
+        for u, v, data in g.edges(data=True):
+            mbr = MBR.cal_mbr(data['coords'])
+            # add forward edge
+            forward_data = copy.deepcopy(data)
+            g.add_edge(u, v, **forward_data)
+            edge_spatial_idx.insert(forward_data['eid'], (mbr.min_lng, mbr.min_lat, mbr.max_lng, mbr.max_lat))
+            edge_idx[forward_data['eid']] = (u, v)
+            # add backward edge
+            backward_data = copy.deepcopy(data)
+            backward_data['eid'] = avail_eid
+            avail_eid += 1
+            backward_data['coords'].reverse()
+            g.add_edge(v, u, **backward_data)
+            edge_spatial_idx.insert(backward_data['eid'], (mbr.min_lng, mbr.min_lat, mbr.max_lng, mbr.max_lat))
+            edge_idx[backward_data['eid']] = (v, u)
+        print('# of nodes:{}'.format(g.number_of_nodes()))
+        print('# of edges:{}'.format(g.number_of_edges()))
+        return RoadNetwork(g, edge_spatial_idx, edge_idx)
 
     def range_query(self, mbr):
         """
