@@ -47,11 +47,11 @@ class TimeStep:
 
 
 class TIHMMMapMatcher(MapMatcher):
-    def __init__(self, rn, debug=False):
+    def __init__(self, rn, routing_weight='length', debug=False):
         self.measurement_error_sigma = 50.0
         self.transition_probability_beta = 2.0
-        self.rn = rn
         self.debug = debug
+        super(TIHMMMapMatcher).__init__(rn, routing_weight)
 
     # our implementation, no candidates or no transition will be set to None, and start a new matching
     def match(self, traj):
@@ -119,7 +119,7 @@ class TIHMMMapMatcher(MapMatcher):
         linear_dist = distance(prev_time_step.observation, time_step.observation)
         for prev_candi_pt in prev_time_step.candidates:
             for cur_candi_pt in time_step.candidates:
-                path_dist, path = find_shortest_path(self.rn, prev_candi_pt, cur_candi_pt)
+                path_dist, path = find_shortest_path(self.rn, prev_candi_pt, cur_candi_pt, self.routing_weight)
                 # invalid transition has no transition probability
                 if path is not None:
                     time_step.add_road_path(prev_candi_pt, cur_candi_pt, path)

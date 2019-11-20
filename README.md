@@ -39,7 +39,7 @@ Currently, TPTK serves as a basic library of [DeepMG](https://github.com/sjruan/
 
 ## Papers
 
-If you find our code useful for your research, please cite our paper:
+If you find our code useful for your research, please cite our papers:
 
 *Sijie Ruan, Ruiyuan Li, Jie Bao, Tianfu He, Yu Zheng. "CloudTP: A Cloud-based Flexible Trajectory Preprocessing Framework". ICDE 2018.*
 
