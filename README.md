@@ -4,7 +4,7 @@ TPTK is a trajectory preprocessing toolkit in Python.
 
 Note that, this is only my personal implementation. For the industrial level quality and efficiency, you're welcome to try our product [JUST](http://just.urban-computing.cn/ "京东城市时空数据引擎"). 
 
-Currently, TPTK serves as a basic library of [DeepMG](https://github.com/sjruan/DeepMG "DeepMG").
+Currently, TPTK serves as a basic library of [DeepMG](https://github.com/sjruan/DeepMG).
 
 ## Features
 
@@ -17,7 +17,7 @@ Currently, TPTK serves as a basic library of [DeepMG](https://github.com/sjruan/
         * A sequence of time-ordered spatio-temporal points
     * Directed & Undirected Road Network
         * A custom class with routing and spatial query support
-        * I/O with OpenStreetMap data (TODO)
+        * I/O with OpenStreetMap data (Please refer to [osm2rn](https://github.com/sjruan/osm2rn))
 
 * Basic Spatial Functions
     * Distance Calculation
