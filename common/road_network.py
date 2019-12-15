@@ -5,6 +5,7 @@ from common.spatial_func import SPoint, distance
 from common.mbr import MBR
 import copy
 
+
 class UndirRoadNetwork(nx.Graph):
     def __init__(self, g, edge_spatial_idx, edge_idx):
         super(UndirRoadNetwork, self).__init__(g)

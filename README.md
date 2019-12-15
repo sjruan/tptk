@@ -28,9 +28,9 @@ Currently, TPTK serves as a basic library of [DeepMG](https://github.com/sjruan/
         * Douglas-Peucker algorithm
     
 * Trajectory Preprocessing Algorithms
-    * Noise Filtering (TODO)
+    * Noise Filtering
     
-    * Segmentation (TODO)
+    * Segmentation
     
     * Stay Point Detection (TODO)
     
@@ -55,8 +55,6 @@ TPTK uses the following dependencies with Python 3.6
 
 Other packages can be easily installed using `conda install`, while the following scripts are recommended for `gdal`.
 
-`conda install -c conda-forge gdal==2.3.2`
-
-## Contributions
-
-If you have any idea or suggestions about the library, don't bother to contact me. :)
+```
+conda install -c conda-forge gdal==2.3.2
+```
