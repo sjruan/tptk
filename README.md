@@ -2,7 +2,7 @@
 
 TPTK is a trajectory preprocessing toolkit in Python.
 
-Note that, this is only my personal implementation. For the industrial level quality and efficiency, you're welcome to try our product [JUST](http://just.urban-computing.cn/ "京东城市时空数据引擎"). 
+Note that, this is only my personal implementation. For the industrial level quality and efficiency, you're welcome to try our product [JUST](http://just.urban-computing.cn/). 
 
 Currently, TPTK serves as a basic library of [DeepMG](https://github.com/sjruan/DeepMG).
 
@@ -29,8 +29,12 @@ Currently, TPTK serves as a basic library of [DeepMG](https://github.com/sjruan/
     
 * Trajectory Preprocessing Algorithms
     * Noise Filtering
+        * Spatio-temporal Range Filter
+        * Heuristic Filter
     
     * Segmentation
+        * Time Interval-based Segmentation
+        * Stay Point-based Segmentation
     
     * Stay Point Detection (TODO)
     

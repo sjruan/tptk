@@ -1,5 +1,5 @@
-from .common.trajectory import Trajectory
-from .common.spatial_func import distance
+from common.trajectory import Trajectory
+from common.spatial_func import distance
 
 
 class Segmentation:
@@ -47,7 +47,7 @@ class StayPointSegmentation(Segmentation):
     def __init__(self, dist_thresh_meter, max_stay_time_min):
         super(Segmentation, self).__init__()
         self.dist_thresh = dist_thresh_meter
-        self.max_stay_time = max_stay_time_min
+        self.max_stay_time = max_stay_time_min * 60
 
     def find_first_exceed_max_distance(self, pt_list, cur_idx):
         cur_pt = pt_list[cur_idx]
