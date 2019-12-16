@@ -51,7 +51,7 @@ class TIHMMMapMatcher(MapMatcher):
         self.measurement_error_sigma = 50.0
         self.transition_probability_beta = 2.0
         self.debug = debug
-        super(TIHMMMapMatcher).__init__(rn, routing_weight)
+        super(TIHMMMapMatcher, self).__init__(rn, routing_weight)
 
     # our implementation, no candidates or no transition will be set to None, and start a new matching
     def match(self, traj):
