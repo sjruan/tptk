@@ -42,6 +42,18 @@ class Trajectory:
                     pre_pt = pt
             return dist
 
+    def time_interval(self):
+        point_time_interval = []
+        for pre, cur in zip(self.pt_list[:-1], self.pt_list[1:]):
+            point_time_interval.append((cur.time - pre.time).total_seconds())
+        return sum(point_time_interval) / len(point_time_interval)
+
+    def distance_interval(self):
+        point_dist_interval = []
+        for pre, cur in zip(self.pt_list[:-1], self.pt_list[1:]):
+            point_dist_interval.append(distance(pre, cur))
+        return sum(point_dist_interval) / len(point_dist_interval)
+
     def mbr(self):
         return MBR.cal_mbr(self.pt_list)
 

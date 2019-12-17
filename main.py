@@ -10,6 +10,7 @@ from datetime import datetime
 import os
 from tqdm import tqdm
 import argparse
+from statistics import statistics
 
 
 def parse_tdrive(filename, tdrive_root_dir):
@@ -87,5 +88,7 @@ if __name__ == '__main__':
         clean_tdrive(opt.tdrive_root_dir, opt.clean_traj_dir)
     elif opt.phase == 'mm':
         mm_tdrive(opt.clean_traj_dir, opt.mm_traj_dir, opt.rn_path)
+    elif opt.phase == 'stat':
+        statistics(opt.clean_traj_dir)
     else:
         raise Exception('unknown phase')

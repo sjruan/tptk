@@ -40,6 +40,11 @@ Currently, TPTK serves as a basic library of [DeepMG](https://github.com/sjruan/
     
     * Map Matching
         * Hidden Markov Map Matching
+        
+         
+* Trajectory Statistics
+    * Summary: #objects, #points, #trajectories
+    * Distribution: #points, time interval, distance interval, length, duration
 
 
 ## Datasets
@@ -62,6 +67,11 @@ python main.py --phase clean --tdrive_root_dir ./data/taxi_log_2008_by_id/ --cle
 
 ```
 python main.py --phase mm --clean_traj_dir ./data/tdrive_clean/ --rn_path ./data/Beijing-16X16-latest/ --mm_traj_dir ./data/tdrive_mm/
+```
+
+* Trajectory Statistics
+```
+python main.py --phase stat --clean_traj_dir ./data/tdrive_clean/ --stat_dir ./data/tdrive_clean/statistics/
 ```
 
 ## Papers
