@@ -71,7 +71,7 @@ python main.py --phase mm --clean_traj_dir ./data/tdrive_clean/ --rn_path ./data
 
 * Trajectory Statistics
 ```
-python main.py --phase stat --clean_traj_dir ./data/tdrive_clean/ --stat_dir ./data/tdrive_clean/statistics/
+python main.py --phase stat --clean_traj_dir ./data/tdrive_clean/
 ```
 
 ## Papers
