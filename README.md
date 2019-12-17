@@ -41,6 +41,29 @@ Currently, TPTK serves as a basic library of [DeepMG](https://github.com/sjruan/
     * Map Matching
         * Hidden Markov Map Matching
 
+
+## Datasets
+
+* Trajectory Data
+    * There are some open-source trajectory datasets, e.g., [TDrive](https://www.microsoft.com/en-us/research/publication/t-drive-trajectory-data-sample/).
+
+* Road Network Data
+    * [OpenStreetMap (OSM)](https://www.openstreetmap.org/) is an open-source map data source, you can preprocess it using [osm2rn](https://github.com/sjruan/osm2rn).
+        
+## Usage
+
+* Clean Trajectories
+
+```
+python main.py --phase clean --tdrive_root_dir ./data/taxi_log_2008_by_id/ --clean_traj_dir ./data/tdrive_clean/ 
+```
+
+* Map-match Trajectories
+
+```
+python main.py --phase mm --clean_traj_dir ./data/tdrive_clean/ --rn_path ./data/Beijing-16X16-latest/ --mm_traj_dir ./data/tdrive_mm/
+```
+
 ## Papers
 
 If you find our code useful for your research, please cite our papers:
