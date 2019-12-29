@@ -1,5 +1,4 @@
-from common.spatial_func import distance
-
+from common.spatial_func import distance, SPoint
 
 class MBR:
     def __init__(self, min_lat, min_lng, max_lat, max_lng):
@@ -17,10 +16,10 @@ class MBR:
         return (self.min_lat + self.max_lat) / 2.0, (self.min_lng + self.max_lng) / 2.0
 
     def get_h(self):
-        return distance((self.min_lat, self.min_lng), (self.max_lat, self.min_lng))
+        return distance(SPoint(self.min_lat, self.min_lng), SPoint(self.max_lat, self.min_lng))
 
     def get_w(self):
-        return distance((self.min_lat, self.min_lng), (self.min_lat, self.max_lng))
+        return distance(SPoint(self.min_lat, self.min_lng), SPoint(self.min_lat, self.max_lng))
 
     def __str__(self):
         h = self.get_h()
