@@ -1,4 +1,4 @@
-from common.spatial_func import distance, SPoint
+from .spatial_func import distance, SPoint
 
 
 class MBR:
