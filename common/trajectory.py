@@ -1,7 +1,8 @@
+from datetime import datetime, timedelta
 from .spatial_func import distance, SPoint
 from .mbr import MBR
 from ..map_matching.candidate_point import CandidatePoint
-from datetime import datetime
+from .spatial_func import cal_loc_along_line
 
 
 class STPoint(SPoint):
@@ -20,14 +21,10 @@ class Trajectory:
         self.tid = tid
         self.pt_list = pt_list
 
-    def __hash__(self):
-        return hash(self.oid + '_' + self.pt_list[0].time.strftime('%Y%m%d%H%M%S') + '_' +
-                    self.pt_list[-1].time.strftime('%Y%m%d%H%M%S'))
-
-    def duration(self):
+    def get_duration(self):
         return (self.pt_list[-1].time - self.pt_list[0].time).total_seconds()
 
-    def length(self):
+    def get_length(self):
         if len(self.pt_list) <= 1:
             return 0.0
         else:
@@ -42,26 +39,29 @@ class Trajectory:
                     pre_pt = pt
             return dist
 
-    def time_interval(self):
+    def get_time_interval(self):
         point_time_interval = []
         for pre, cur in zip(self.pt_list[:-1], self.pt_list[1:]):
             point_time_interval.append((cur.time - pre.time).total_seconds())
         return sum(point_time_interval) / len(point_time_interval)
 
-    def distance_interval(self):
+    def get_distance_interval(self):
         point_dist_interval = []
         for pre, cur in zip(self.pt_list[:-1], self.pt_list[1:]):
             point_dist_interval.append(distance(pre, cur))
         return sum(point_dist_interval) / len(point_dist_interval)
 
-    def mbr(self):
+    def get_mbr(self):
         return MBR.cal_mbr(self.pt_list)
+
+    def get_start_time(self):
+        return self.pt_list[0].time
+
+    def get_end_time(self):
+        return self.pt_list[-1].time
 
     def get_mid_time(self):
         return self.pt_list[0].time + (self.pt_list[-1].time - self.pt_list[0].time) / 2.0
-
-    def get_center(self):
-        return MBR.cal_mbr(self.pt_list).center()
 
     def get_centroid(self):
         mean_lat = 0.0
@@ -73,6 +73,54 @@ class Trajectory:
         mean_lng /= len(self.pt_list)
         return SPoint(mean_lat, mean_lng)
 
+    def query_trajectory_by_temporal_range(self, start_time, end_time):
+        # start_time < pt.time < end_time
+        traj_start_time = self.get_start_time()
+        traj_end_time = self.get_end_time()
+        if start_time > traj_end_time:
+            return None
+        if end_time <= traj_start_time:
+            return None
+        st = max(traj_start_time, start_time)
+        et = min(traj_end_time + timedelta(seconds=1), end_time)
+        start_idx = self.binary_search_idx(st)
+        end_idx = self.binary_search_idx(et)
+        if self.pt_list[end_idx].time == et:
+            end_idx += 1
+        sub_pt_list = self.pt_list[start_idx:end_idx]
+        return Trajectory(self.oid, get_tid(self.oid, sub_pt_list), sub_pt_list)
+
+    def binary_search_idx(self, time):
+        # self.pt_list[idx] <= time < self.pt_list[idx+1].time
+        nb_pts = len(self.pt_list)
+        left_idx = 0
+        right_idx = nb_pts - 1
+        while left_idx <= right_idx:
+            mid_idx = int((left_idx + right_idx) / 2)
+            if (mid_idx == nb_pts - 1 and time > self.pt_list[-1].time) or (
+                    mid_idx == 0 and time < self.pt_list[0].time):
+                return None
+            if (mid_idx < nb_pts - 1 and self.pt_list[mid_idx].time <= time < self.pt_list[mid_idx + 1].time) or \
+                    (mid_idx == nb_pts - 1 and self.pt_list[mid_idx].time == time):
+                return mid_idx
+            elif self.pt_list[mid_idx].time < time:
+                left_idx = mid_idx + 1
+            else:
+                right_idx = mid_idx - 1
+
+    def query_location_by_timestamp(self, time):
+        idx = self.binary_search_idx(time)
+        if idx is None:
+            return None
+        if self.pt_list[idx].time == time or (self.pt_list[idx+1].time - self.pt_list[idx].time).total_seconds() == 0:
+            return SPoint(self.pt_list[idx].lat, self.pt_list[idx].lng)
+        else:
+            # interpolate location
+            dist_ab = distance(self.pt_list[idx], self.pt_list[idx+1])
+            dist_traveled = dist_ab * (time - self.pt_list[idx].time).total_seconds() / \
+                            (self.pt_list[idx+1].time - self.pt_list[idx].time).total_seconds()
+            return cal_loc_along_line(self.pt_list[idx], self.pt_list[idx+1], dist_traveled / dist_ab)
+
     def to_wkt(self):
         wkt = 'LINESTRING ('
         for pt in self.pt_list:
@@ -80,15 +128,29 @@ class Trajectory:
         wkt = wkt[:-2] + ')'
         return wkt
 
+    def __hash__(self):
+        return hash(self.oid + '_' + self.pt_list[0].time.strftime('%Y%m%d%H%M%S') + '_' +
+                    self.pt_list[-1].time.strftime('%Y%m%d%H%M%S'))
+
+    def __eq__(self, other):
+        return hash(self) == hash(other)
+
     def __repr__(self):
         return f'Trajectory(oid={self.oid},tid={self.tid})'
 
 
-def traj_point_dist(traj, pt):
-    dists = []
-    for t_pt in traj.pt_list:
-        dists.append(distance(t_pt, pt))
-    return min(dists)
+def get_tid(oid, pt_list):
+    return oid + '_' + pt_list[0].time.strftime('%Y%m%d%H%M%S') + '_' + pt_list[-1].time.strftime('%Y%m%d%H%M%S')
+
+
+def traj_point_dist(traj, pt, method='centroid'):
+    if method == 'nearest':
+        dists = []
+        for t_pt in traj.pt_list:
+            dists.append(distance(t_pt, pt))
+        return min(dists)
+    elif method == 'centroid':
+        return distance(pt, traj.get_centroid())
 
 
 def parse_traj_file(input_path, traj_type='raw', extra_fields=None):
@@ -154,7 +216,7 @@ def store_traj_file(trajs, target_path, traj_type='raw', extra_fields=None):
         for traj in trajs:
             pt_list = traj.pt_list
             f.write('#,{},{},{},{},{} km\n'.format(traj.tid, traj.oid, pt_list[0].time.strftime(time_format),
-                                                   pt_list[-1].time.strftime(time_format), traj.length() / 1000))
+                                                   pt_list[-1].time.strftime(time_format), traj.get_length() / 1000))
             if traj_type == 'raw':
                 for pt in pt_list:
                     f.write('{},{},{}'.format(pt.time.strftime(time_format), pt.lat, pt.lng))

@@ -26,6 +26,11 @@ Currently, TPTK serves as a basic library of [DeepMG](https://github.com/sjruan/
         * Split a given mbr into specified size/interval grid cells
     * Line Segment Simplification
         * Douglas-Peucker algorithm
+
+* Data Manipulation
+    * Spatial Query (TODO: indexing)
+    * Spatio-temporal Query (TODO: indexing)
+    
     
 * Trajectory Preprocessing Algorithms
     * Noise Filtering
@@ -36,7 +41,9 @@ Currently, TPTK serves as a basic library of [DeepMG](https://github.com/sjruan/
         * Time Interval-based Segmentation
         * Stay Point-based Segmentation
     
-    * Stay Point Detection (TODO)
+    * Stay Point Detection
+        * Classical Stay Point Detection
+        * Density-based Stay Point Detection
     
     * Map Matching
         * Hidden Markov Map Matching
