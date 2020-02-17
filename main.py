@@ -1,16 +1,16 @@
 # a tutorial example based on T-Drive dataset
-from common.road_network import load_rn_shp
-from common.trajectory import Trajectory, store_traj_file, parse_traj_file
-from common.trajectory import STPoint
-from noise_filter import STFilter, HeuristicFilter
-from segmentation import TimeIntervalSegmentation, StayPointSegmentation
-from map_matching.hmm.hmm_map_matcher import TIHMMMapMatcher
-from common.mbr import MBR
+from .common.road_network import load_rn_shp
+from .common.trajectory import Trajectory, store_traj_file, parse_traj_file
+from .common.trajectory import STPoint
+from .noise_filter import STFilter, HeuristicFilter
+from .segmentation import TimeIntervalSegmentation, StayPointSegmentation
+from .map_matching.hmm.hmm_map_matcher import TIHMMMapMatcher
+from .common.mbr import MBR
 from datetime import datetime
 import os
 from tqdm import tqdm
 import argparse
-from statistics import statistics
+from .statistics import statistics
 
 
 def parse_tdrive(filename, tdrive_root_dir):

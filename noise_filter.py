@@ -1,5 +1,5 @@
-from common.spatial_func import distance
-from common.trajectory import Trajectory
+from .common.spatial_func import distance
+from .common.trajectory import Trajectory
 
 
 class NoiseFilter:

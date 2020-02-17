@@ -1,4 +1,4 @@
-from common.trajectory import parse_traj_file
+from .common.trajectory import parse_traj_file
 import matplotlib.pyplot as plt
 from tqdm import tqdm
 import os

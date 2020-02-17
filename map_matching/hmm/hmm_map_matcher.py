@@ -5,13 +5,13 @@ Conference on Advances in Geographic Information Systems. ACM, 2009.
 This is a Python translation from https://github.com/graphhopper/map-matching/tree/master/hmm-lib
 """
 
-from map_matching.hmm.hmm_probabilities import HMMProbabilities
-from map_matching.hmm.ti_viterbi import ViterbiAlgorithm, SequenceState
-from map_matching.map_matcher import MapMatcher
-from map_matching.candidate_point import get_candidates
-from common.spatial_func import distance
-from common.trajectory import STPoint, Trajectory
-from map_matching.utils import find_shortest_path
+from ..hmm.hmm_probabilities import HMMProbabilities
+from ..hmm.ti_viterbi import ViterbiAlgorithm, SequenceState
+from ..map_matcher import MapMatcher
+from ..candidate_point import get_candidates
+from ...common.spatial_func import distance
+from ...common.trajectory import STPoint, Trajectory
+from ..utils import find_shortest_path
 
 
 class TimeStep:

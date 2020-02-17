@@ -1,6 +1,6 @@
-from common.spatial_func import distance, SPoint
-from common.mbr import MBR
-from map_matching.candidate_point import CandidatePoint
+from .spatial_func import distance, SPoint
+from .mbr import MBR
+from ..map_matching.candidate_point import CandidatePoint
 from datetime import datetime
 
 

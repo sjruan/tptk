@@ -1,5 +1,5 @@
-from common.spatial_func import SPoint, LAT_PER_METER, LNG_PER_METER, project_pt_to_segment, distance
-from common.mbr import MBR
+from ..common.spatial_func import SPoint, LAT_PER_METER, LNG_PER_METER, project_pt_to_segment, distance
+from ..common.mbr import MBR
 
 
 class CandidatePoint(SPoint):
