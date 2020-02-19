@@ -117,6 +117,8 @@ class Trajectory:
         else:
             # interpolate location
             dist_ab = distance(self.pt_list[idx], self.pt_list[idx+1])
+            if dist_ab == 0:
+                return SPoint(self.pt_list[idx].lat, self.pt_list[idx].lng)
             dist_traveled = dist_ab * (time - self.pt_list[idx].time).total_seconds() / \
                             (self.pt_list[idx+1].time - self.pt_list[idx].time).total_seconds()
             return cal_loc_along_line(self.pt_list[idx], self.pt_list[idx+1], dist_traveled / dist_ab)
