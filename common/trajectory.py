@@ -74,7 +74,7 @@ class Trajectory:
         return SPoint(mean_lat, mean_lng)
 
     def query_trajectory_by_temporal_range(self, start_time, end_time):
-        # start_time < pt.time < end_time
+        # start_time <= pt.time < end_time
         traj_start_time = self.get_start_time()
         traj_end_time = self.get_end_time()
         if start_time > traj_end_time:
@@ -83,25 +83,32 @@ class Trajectory:
             return None
         st = max(traj_start_time, start_time)
         et = min(traj_end_time + timedelta(seconds=1), end_time)
-        start_idx = self.binary_search_idx(st)
-        end_idx = self.binary_search_idx(et)
-        if self.pt_list[end_idx].time == et:
+        start_idx = self.binary_search_idx(st)  # pt_list[start_idx].time <= st < pt_list[start_idx+1].time
+        if self.pt_list[start_idx].time < st:
+            # then the start_idx is out of the range, we need to increase it
+            start_idx += 1
+        end_idx = self.binary_search_idx(et)  # pt_list[end_idx].time <= et < pt_list[end_idx+1].time
+        if self.pt_list[end_idx].time < et:
+            # then the end_idx is acceptable
             end_idx += 1
         sub_pt_list = self.pt_list[start_idx:end_idx]
         return Trajectory(self.oid, get_tid(self.oid, sub_pt_list), sub_pt_list)
 
     def binary_search_idx(self, time):
-        # self.pt_list[idx] <= time < self.pt_list[idx+1].time
+        # self.pt_list[idx].time <= time < self.pt_list[idx+1].time
+        # if time < self.pt_list[0].time, return -1
+        # if time >= self.pt_list[len(self.pt_list)-1].time, return len(self.pt_list)-1
         nb_pts = len(self.pt_list)
+        if time < self.pt_list[0].time:
+            return -1
+        if time >= self.pt_list[-1].time:
+            return nb_pts - 1
+        # the time is in the middle
         left_idx = 0
         right_idx = nb_pts - 1
         while left_idx <= right_idx:
             mid_idx = int((left_idx + right_idx) / 2)
-            if (mid_idx == nb_pts - 1 and time > self.pt_list[-1].time) or (
-                    mid_idx == 0 and time < self.pt_list[0].time):
-                return None
-            if (mid_idx < nb_pts - 1 and self.pt_list[mid_idx].time <= time < self.pt_list[mid_idx + 1].time) or \
-                    (mid_idx == nb_pts - 1 and self.pt_list[mid_idx].time == time):
+            if mid_idx < nb_pts - 1 and self.pt_list[mid_idx].time <= time < self.pt_list[mid_idx + 1].time:
                 return mid_idx
             elif self.pt_list[mid_idx].time < time:
                 left_idx = mid_idx + 1
@@ -110,7 +117,7 @@ class Trajectory:
 
     def query_location_by_timestamp(self, time):
         idx = self.binary_search_idx(time)
-        if idx is None:
+        if idx == -1 or idx == len(self.pt_list) - 1:
             return None
         if self.pt_list[idx].time == time or (self.pt_list[idx+1].time - self.pt_list[idx].time).total_seconds() == 0:
             return SPoint(self.pt_list[idx].lat, self.pt_list[idx].lng)
