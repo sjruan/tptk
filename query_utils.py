@@ -3,17 +3,26 @@ from .common.spatial_func import LAT_PER_METER, LNG_PER_METER, distance
 from datetime import timedelta
 
 
-def query_stay_points_by_temporal_range(sps, start_time, end_time):
+def query_stay_points_by_temporal_range(sps, start_time, end_time, temporal_relation='middle'):
     results = []
     # start_time inclusive, end_time exclusive
     for sp in sps:
-        if start_time <= sp.get_mid_time() < end_time:
+        if is_temporal_valid(sp, start_time, end_time, temporal_relation):
+            results.append(sp)
+    return results
+
+
+def query_stay_points_by_spatial_range(sps, start_time, end_time, spatial_relation='centroid'):
+    results = []
+    # start_time inclusive, end_time exclusive
+    for sp in sps:
+        if is_spatial_valid(sp, start_time, end_time, spatial_relation):
             results.append(sp)
     return results
 
 
 def query_stay_points_by_spatio_temporal_range(sps, query_pt, start_time, end_time, query_radius,
-                                               spatial_relation='centroid', temporal_relation='mid'):
+                                               spatial_relation='centroid', temporal_relation='middle'):
     results = []
     for sp in sps:
         if is_spatial_valid(sp, query_pt, query_radius, spatial_relation) and \
