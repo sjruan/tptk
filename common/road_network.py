@@ -29,7 +29,7 @@ class UndirRoadNetwork(nx.Graph):
             new_data = copy.deepcopy(data)
             g.add_node(n, **new_data)
         # add edges
-        for u, v, data in g.edges(data=True):
+        for u, v, data in self.edges(data=True):
             mbr = MBR.cal_mbr(data['coords'])
             # add forward edge
             forward_data = copy.deepcopy(data)
