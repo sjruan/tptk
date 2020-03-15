@@ -64,12 +64,12 @@ def construct_path(rn, mm_traj, routing_weight):
     path = []
     mm_pt_list = mm_traj.pt_list
     start_idx = len(mm_pt_list) - 1
-    pre_edge_enter_time = None
     # find the first matched point
     for i in range(len(mm_pt_list)):
         if mm_pt_list[i].data['candi_pt'] is not None:
             start_idx = i
             break
+    pre_edge_enter_time = mm_pt_list[start_idx].time
     for i in range(start_idx + 1, len(mm_pt_list)):
         pre_mm_pt = mm_pt_list[i-1]
         cur_mm_pt = mm_pt_list[i]
@@ -81,7 +81,8 @@ def construct_path(rn, mm_traj, routing_weight):
         pre_candi_pt = pre_mm_pt.data['candi_pt']
         if cur_mm_pt.data['candi_pt'] is None:
             path.append(PathEntity(pre_edge_enter_time, pre_mm_pt.time, pre_candi_pt.eid))
-            paths.append(Path(mm_traj.oid, get_pid(mm_traj.oid, path), path))
+            if len(path) > 2:
+                paths.append(Path(mm_traj.oid, get_pid(mm_traj.oid, path), path))
             path = []
             continue
         # matched -> matched
@@ -92,7 +93,8 @@ def construct_path(rn, mm_traj, routing_weight):
             # cannot connect
             if p is None:
                 path.append(PathEntity(pre_edge_enter_time, pre_mm_pt.time, pre_candi_pt.eid))
-                paths.append(Path(mm_traj.oid, get_pid(mm_traj.oid, path), path))
+                if len(path) > 2:
+                    paths.append(Path(mm_traj.oid, get_pid(mm_traj.oid, path), path))
                 path = []
                 pre_edge_enter_time = cur_mm_pt.time
                 continue
@@ -122,21 +124,28 @@ def construct_path(rn, mm_traj, routing_weight):
                     dist_inner += rn[start][end]['length']
                 total_dist = dist_inner + dist_to_p_entrance + dist_to_p_exit
             delta_time = (cur_mm_pt.time - pre_mm_pt.time).total_seconds()
-            pre_edge_leave_time = pre_mm_pt.time + timedelta(seconds=delta_time*(dist_to_p_entrance/total_dist))
-            path.append(PathEntity(pre_edge_enter_time, pre_edge_leave_time, pre_candi_pt.eid))
-            cur_edge_enter_time = cur_mm_pt.time - timedelta(seconds=delta_time*(dist_to_p_exit/total_dist))
-            sub_path = linear_interpolate_path(p, total_dist - dist_to_p_entrance - dist_to_p_exit,
-                                               rn, pre_edge_leave_time, cur_edge_enter_time)
-            path.extend(sub_path)
+            # two consecutive points matched to the same vertex
+            if total_dist == 0:
+                pre_edge_leave_time = cur_mm_pt.time
+                path.append(PathEntity(pre_edge_enter_time, pre_edge_leave_time, pre_candi_pt.eid))
+                cur_edge_enter_time = cur_mm_pt.time
+            else:
+                pre_edge_leave_time = pre_mm_pt.time + timedelta(seconds=delta_time*(dist_to_p_entrance/total_dist))
+                path.append(PathEntity(pre_edge_enter_time, pre_edge_leave_time, pre_candi_pt.eid))
+                cur_edge_enter_time = cur_mm_pt.time - timedelta(seconds=delta_time * (dist_to_p_exit / total_dist))
+                sub_path = linear_interpolate_path(p, total_dist - dist_to_p_entrance - dist_to_p_exit,
+                                                   rn, pre_edge_leave_time, cur_edge_enter_time)
+                path.extend(sub_path)
             pre_edge_enter_time = cur_edge_enter_time
     # handle last matched similar to (matched -> unmatched)
     if mm_pt_list[-1].data['candi_pt'] is not None:
         path.append(PathEntity(pre_edge_enter_time, mm_pt_list[-1].time, mm_pt_list[-1].data['candi_pt'].eid))
-        paths.append(Path(mm_traj.oid, get_pid(mm_traj.oid, path), path))
+        if len(path) > 2:
+            paths.append(Path(mm_traj.oid, get_pid(mm_traj.oid, path), path))
     return paths
 
 
-def linear_interpolate_path(p, dist_p, rn, enter_time, leave_time):
+def linear_interpolate_path(p, dist_inner, rn, enter_time, leave_time):
     path = []
     edges = []
     for i in range(len(p)-1):
@@ -150,7 +159,7 @@ def linear_interpolate_path(p, dist_p, rn, enter_time, leave_time):
             # meet the path leave time due to double calculation accuracy
             edge_leave_time = leave_time
         else:
-            edge_leave_time = edge_enter_time + timedelta(seconds=delta_time*(edge_data['length']/dist_p))
+            edge_leave_time = edge_enter_time + timedelta(seconds=delta_time*(edge_data['length']/dist_inner))
         path.append(PathEntity(edge_enter_time, edge_leave_time, edge_data['eid']))
         edge_enter_time = edge_leave_time
     return path
