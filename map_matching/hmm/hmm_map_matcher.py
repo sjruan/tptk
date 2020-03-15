@@ -12,6 +12,7 @@ from ..candidate_point import get_candidates
 from ...common.spatial_func import distance
 from ...common.trajectory import STPoint, Trajectory
 from ..utils import find_shortest_path
+from ..route_constructor import construct_path
 
 
 class TimeStep:
@@ -66,6 +67,11 @@ class TIHMMMapMatcher(MapMatcher):
             mm_pt_list.append(STPoint(ss.observation.lat, ss.observation.lng, ss.observation.time, data))
         mm_traj = Trajectory(traj.oid, traj.tid, mm_pt_list)
         return mm_traj
+
+    def match_to_path(self, traj):
+        mm_traj = self.match(traj)
+        path = construct_path(self.rn, mm_traj, self.routing_weight)
+        return path
 
     def create_time_step(self, pt):
         time_step = None

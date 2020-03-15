@@ -46,7 +46,11 @@ Currently, TPTK serves as a basic library of [DeepMG](https://github.com/sjruan/
         * Density-based Stay Point Detection
     
     * Map Matching
-        * Hidden Markov Map Matching
+        * Algorithms
+            * Hidden Markov Map Matching
+        * Output Formats
+            * Matched GPS point list `match`
+            * Matched path `match_to_path`
         
          
 * Trajectory Statistics

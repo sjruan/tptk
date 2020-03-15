@@ -5,3 +5,6 @@ class MapMatcher:
 
     def match(self, traj):
         pass
+
+    def match_to_path(self, traj):
+        pass
