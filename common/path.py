@@ -16,8 +16,9 @@ class Path:
 
 
 def parse_path_file(input_path):
+    time_format = '%Y-%m-%d %H:%M:%S.%f'
+    paths = []
     with open(input_path, 'r') as f:
-        paths = []
         path_entities = []
         pid = None
         for line in f.readlines():
@@ -29,12 +30,13 @@ def parse_path_file(input_path):
                 pid = attrs[1]
                 path_entities = []
             else:
-                enter_time = datetime.fromisoformat(attrs[0])
-                leave_time = datetime.fromisoformat(attrs[1])
+                enter_time = datetime.strptime(attrs[0], time_format)
+                leave_time = datetime.strptime(attrs[1], time_format)
                 eid = int(attrs[2])
                 path_entities.append(PathEntity(enter_time, leave_time, eid))
         if len(path_entities) != 0:
             paths.append(Path(oid, pid, path_entities))
+    return paths
 
 
 def store_path_file(paths, target_path):
