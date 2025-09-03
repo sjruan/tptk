@@ -224,11 +224,11 @@ def store_traj_file(trajs, target_path, traj_type='raw', extra_fields=None):
     with open(target_path, 'w') as f:
         for traj in trajs:
             pt_list = traj.pt_list
-            f.write('#,{},{},{},{},{} km\n'.format(traj.tid, traj.oid, pt_list[0].time.strftime(time_format),
+            f.write('#,{},{},{},{},{:.4f} km\n'.format(traj.tid, traj.oid, pt_list[0].time.strftime(time_format),
                                                    pt_list[-1].time.strftime(time_format), traj.get_length() / 1000))
             if traj_type == 'raw':
                 for pt in pt_list:
-                    f.write('{},{},{}'.format(pt.time.strftime(time_format), pt.lat, pt.lng))
+                    f.write('{},{:.7f},{:.7f}'.format(pt.time.strftime(time_format), pt.lat, pt.lng))
                     if extra_fields is not None:
                         for extra_field in extra_fields:
                             f.write(',{}'.format(pt.data[extra_field]))
@@ -237,9 +237,9 @@ def store_traj_file(trajs, target_path, traj_type='raw', extra_fields=None):
                 for pt in pt_list:
                     candi_pt = pt.data['candi_pt']
                     if candi_pt is not None:
-                        f.write('{},{},{},{},{},{},{},{}\n'.format(pt.time.strftime(time_format), pt.lat, pt.lng,
+                        f.write('{},{:.7f},{:.7f},{},{:.7f},{:.7f},{:.2f},{:.2f}\n'.format(pt.time.strftime(time_format), pt.lat, pt.lng,
                                                                    candi_pt.eid, candi_pt.lat, candi_pt.lng,
                                                                    candi_pt.error, candi_pt.offset))
                     else:
-                        f.write('{},{},{},None,None,None,None,None\n'.format(
+                        f.write('{},{:.7f},{:.7f},None,None,None,None,None\n'.format(
                             pt.time.strftime(time_format), pt.lat, pt.lng))
